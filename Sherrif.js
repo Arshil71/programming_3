@@ -79,7 +79,7 @@ class ExplosiveBullet extends Block {
     }
 }
 
-//fire that's created by the explosion of the bullets
+//fire that's created by the explosion of the bullets (orange)
 class Fire extends Block{
     constructor(x,y){
         super(x,y,1);
