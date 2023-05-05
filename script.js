@@ -1,5 +1,5 @@
-var xLength = 100;
-var yLength = 100;
+var xLength = 70;
+var yLength = 70;
 
 var matrix = [];
 var objects = [];
@@ -7,7 +7,7 @@ var objects = [];
 
 var frameRate = 60;
 
-var side = 10;
+var side = 15;
 
 
 function setup() {
