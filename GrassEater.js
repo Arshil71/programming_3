@@ -1,4 +1,6 @@
-class GrassEater extends Block { //eats grass (yellow)
+const Block = require("./Block")
+
+module.exports = class GrassEater extends Block { //eats grass (yellow)
     constructor(x, y) {
         super(x, y, 5);
         this.energy = 4;
@@ -21,7 +23,7 @@ class GrassEater extends Block { //eats grass (yellow)
         let target = this.target
         let coords;
         do {
-            coords = random(this.chooseCell(target--)); //look for nearby grass (target) -> then empty
+            coords = this.random(this.chooseCell(target--)); //look for nearby grass (target) -> then empty
         } while (coords == undefined && target >= 0)
 
         if (target == -1) this.energy--; //if no targets were nearby, (moved to empty space, or didn't find a place to move)

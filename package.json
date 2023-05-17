@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Arshil71/programming_3#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1"
   }
 }

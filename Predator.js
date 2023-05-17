@@ -1,4 +1,6 @@
-class Predator extends GrassEater { //eats grass eaters, if none are nearby, eats grass, otherwise moves (red).
+const GrassEater = require("./GrassEater")
+
+module.exports = class Predator extends GrassEater { //eats grass eaters, if none are nearby, eats grass, otherwise moves (red).
     constructor(x, y) {
         super(x, y)
         this.energy = 5

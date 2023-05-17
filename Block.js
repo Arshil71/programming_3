@@ -1,7 +1,7 @@
 // Class numbers: EMPTY: 0, GRASS: 1, GRASS_EATER: 2, PREDATOR: 3, SHERRIF: 4, FARMER: 5 ,FIRE: 98, EXPLOSIVE_BULLET: 99, 
 
 //is the main parent of all differrent class types.
-class Block{
+module.exports = class Block{
     constructor(x, y, moveSpeed){
         this.x = x;
         this.y = y;
@@ -68,7 +68,10 @@ class Block{
     isValid(x,y){
         return x >= 0 && y >= 0 && y < matrix.length && x < matrix[y].length;
     }
+
+    random(arr) {
+        let result = Math.floor(Math.random() * arr.length)
+        return arr[result];
+    }
 }
-
-
 

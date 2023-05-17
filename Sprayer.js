@@ -1,4 +1,6 @@
-class Sprayer extends Block{ //boosts the growth of nearby grass (blue)
+const Block = require("./Block")
+
+module.exports = class Sprayer extends Block{ //boosts the growth of nearby grass (blue)
     constructor(x,y){
         super(x,y, 34);
 
