@@ -25,11 +25,11 @@ module.exports = class Fire extends Block{
         this.remove(grassX, grassY) //remove the grass
 
         if(rand < 40){ //40% chance for the fire to spread.
-            changeMatrix(grassX, grassY, this.id, true);
+            GlobalMethods.changeMatrix(grassX, grassY, this.id, true);
         }
         else{
-            changeMatrix(grassX, grassY, this.id, false);
-            changeMatrix(this.x, this.y, 0, false);
+            GlobalMethods.changeMatrix(grassX, grassY, this.id, false);
+            GlobalMethods.changeMatrix(this.x, this.y, 0, false);
             this.changeCoords(grassX, grassY);
         }
     }

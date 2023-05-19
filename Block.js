@@ -58,7 +58,7 @@ module.exports = class Block{
         for(var i in objects){
             if(x == objects[i].x && y == objects[i].y){
                 objects.splice(i,1);
-                changeMatrix(x,y, 0, false);
+                GlobalMethods.changeMatrix(x,y, 0, false);
                 return; //to break out of the loop, not keep searching for the object.
             }
         }

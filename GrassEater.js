@@ -36,17 +36,17 @@ module.exports = class GrassEater extends Block { //eats grass (yellow)
 
         if (target != -1) this.remove(x, y); //remove object at destination (if it wasn't an empty space)
 
-        changeMatrix(x, y, this.id, false) //update destination block to this object. (it's not multiplication!)
+        GlobalMethods.changeMatrix(x, y, this.id, false) //update destination block to this object. (it's not multiplication!)
 
         // energy is enough to multiply
         if (this.energy >= this.multiply) {
             this.energy = 4;
-            changeMatrix(this.x, this.y, this.id, true) //multiply at current position.
+            GlobalMethods.changeMatrix(this.x, this.y, this.id, true) //multiply at current position.
         }
 
 
         else { //energy < multiply
-            changeMatrix(this.x, this.y, 0, false) //replace current position with empty.
+            GlobalMethods.changeMatrix(this.x, this.y, 0, false) //replace current position with empty.
         }
         this.changeCoords(x, y); //update coordinates.
 

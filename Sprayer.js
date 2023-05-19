@@ -36,7 +36,7 @@ module.exports = class Sprayer extends Block{ //boosts the growth of nearby gras
     spreadGrass(x, y) {
         for (let xx = x - this.spreadRadius; xx < x + this.spreadRadius; xx++){
             for (let yy = y - this.spreadRadius; yy < y + this.spreadRadius; yy++){
-                if(this.isValid(xx,yy) && matrix[yy][xx] == 0) changeMatrix(xx, yy, 1, true) //if empty, add grass
+                if(this.isValid(xx,yy) && matrix[yy][xx] == 0) GlobalMethods.changeMatrix(xx, yy, 1, true) //if empty, add grass
             }
         }
     }

@@ -16,7 +16,7 @@ module.exports =  class Grass extends Block { //spreads around, is food for many
         let x = array[0];
         let y = array[1];
 
-        changeMatrix(x, y, 1, true);
+        GlobalMethods.changeMatrix(x, y, 1, true);
         this.step = 0;
 
     }

@@ -21,7 +21,7 @@ module.exports = class Sherrif extends Block { //moves around and shoots explosi
             //if direction is out of bounds, it's a waste of a bullet for the sherrif
             if (this.isValid(bulletX, bulletY)) {
                 this.remove(bulletX, bulletY)
-                changeMatrix(bulletX, bulletY, 99, false)
+                GlobalMethods.changeMatrix(bulletX, bulletY, 99, false)
                 objects.push(new ExplosiveBullet(bulletX, bulletY, [bulletX - this.x, bulletY - this.y]/* direction */))
             }
             this.shootStep = 0;
@@ -33,8 +33,8 @@ module.exports = class Sherrif extends Block { //moves around and shoots explosi
         let x = coords[0];
         let y = coords[1];
 
-        changeMatrix(x, y, this.id, false); //move to the desired place
-        changeMatrix(this.x, this.y, 0, false); //replace previous position
+        GlobalMethods.changeMatrix(x, y, this.id, false); //move to the desired place
+        GlobalMethods.changeMatrix(this.x, this.y, 0, false); //replace previous position
         this.changeCoords(x, y); //update coordinates
 
         this.step = 0;

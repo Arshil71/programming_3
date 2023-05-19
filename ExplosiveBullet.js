@@ -14,8 +14,8 @@ module.exports = class ExplosiveBullet extends Block {
         let y = this.y + this.direction[1]; //where the bullet will move in terms of y
         if (this.isValid(x, y)) { //bullet destination is inside matrix.
             this.remove(x, y);
-            changeMatrix(x, y, this.id, false);
-            changeMatrix(this.x, this.y, 0, false);
+            GlobalMethods.changeMatrix(x, y, this.id, false);
+            GlobalMethods.changeMatrix(this.x, this.y, 0, false);
             this.changeCoords(x, y);
         }
         else {
@@ -28,7 +28,7 @@ module.exports = class ExplosiveBullet extends Block {
 
                         if(matrix[yy][xx] == 1 /*grass detected */ && random < 5){ //5% chance to cause fire from the explosion
                             this.remove(xx, yy);
-                            changeMatrix(xx,yy, 98, true)
+                            GlobalMethods.changeMatrix(xx,yy, 98, true)
                         }
                         else{
                             this.remove(xx, yy);
