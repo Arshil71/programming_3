@@ -1,4 +1,4 @@
-// Class numbers: EMPTY: 0, GRASS: 1, GRASS_EATER: 2, PREDATOR: 3, SHERRIF: 4, FARMER: 5 ,FIRE: 98, EXPLOSIVE_BULLET: 99, 
+// Class numbers: EMPTY: 0, GRASS: 1, GRASS_EATER: 2, PREDATOR: 3, SHERRIF: 4, SPRAYER: 5 ,FIRE: 98, EXPLOSIVE_BULLET: 99, 
 
 //is the main parent of all differrent class types.
 module.exports = class Block{

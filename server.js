@@ -13,10 +13,10 @@ server.listen(3000, function(){
    console.log("Example is running on port 3000");
 });
 
-var framRate = 60
+var framRate = 10
 
-xLength = 70;
-yLength = 70;
+xLength = 50;
+yLength = 50;
 
 matrix = [];
 
@@ -55,14 +55,13 @@ GlobalMethods = {
    //change an element in the matrix, and update the color on screen. 
    changeMatrix: function(x, y, value, spread){
        matrix[y][x] = value;
-       GlobalMethods.drawRect(x,y);
        if(spread == true) objects.push(GlobalMethods.classify(value, x, y));
    },
+}
 
-   //update color of square (rectangle) on the screen.
-   drawRect: function(x,y){
-       io.emit("drawRect", x, y, matrix)
-   }
+//checks whether or not [x,y] is in the matrix.
+function isValid(x,y){
+   return x >= 0 && y >= 0 && y < matrix.length && x < matrix[y].length;
 }
 
 function createCanvas(){
@@ -86,16 +85,7 @@ function createCanvas(){
    }
 
    //draw the colors of squares (rectangles) on the screen.
-   for (var y = 0; y < matrix.length; y++) {
-         for (var x = 0; x < matrix[y].length; x++) {
-            GlobalMethods.drawRect(x, y)
-
-            /*
-            fill("blue")
-            text(x+" "+y, x*side+side/2,y*side+side/2)
-            */
-         }
-   }
+   io.emit("updateWholeRect", matrix)
    
 }
 
@@ -104,6 +94,7 @@ function drawGame(){
       objects[i].move();
    }
 
+   io.emit("updateWholeRect", matrix)
    return matrix
 
 }
@@ -122,7 +113,32 @@ io.on("connection", function(socket){
    createCanvas()
    socket.emit("objectsInfo", objects)
    socket.emit("initial", matrix)
-   io.on("disconnect", function(){
+
+   socket.on("disconnect", function(){
       console.log("A user left!")
    })
+
+   socket.on("onClicked", function(x, y, radius, toIndex){
+      if(!isValid(x,y)) return
+      var spread = toIndex > 0
+
+      for(var yy = y - radius; yy <= y + radius; yy++){
+         for(var xx = x - radius; xx <= x + radius; xx++){
+            if(isValid(xx,yy)){
+               if(matrix[yy][xx] != 0){
+                  for(var i in objects){
+                     if(xx == objects[i].x && yy == objects[i].y){
+                        objects.splice(i,1);
+                        break; //to break out of the loop, not keep searching for the object.
+                     }
+                  }
+               }
+               GlobalMethods.changeMatrix(xx,yy, toIndex, spread);
+            }
+         }
+      }
+      io.emit("updateWholeRect", matrix)
+      
+   })
+   
 })

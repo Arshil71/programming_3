@@ -1,21 +1,28 @@
 let socket = io()
-let initialMatrix = []
+let matrixx = []
+let objectss = []
 
 var side = 15;
 
-var xLength = 70
-var yLength = 70
+var xLength = 50
+var yLength = 50
+
+var clickRadius = 0
+var clickRadiusRange = document.getElementById("clickRadiusRange")
+var toIndex = 5
+var toIndexDocument = document.getElementById("toIndex")
 
 socket.on("initial", function(matrix){
-    initialMatrix = matrix;
+    matrixx = matrix;
 })
 
 window.addEventListener("click", function(){
-    var string = mouseX + mouseY
-    var p = document.createElement('p');
-    p.innerText = string;
-    chatDiv = document.getElementById("div")
-    chatDiv.appendChild(p);
+    var xCoordinate = Math.floor(mouseX/side)
+    var yCoordinate = Math.floor(mouseY/side)
+    clickRadius = parseInt(clickRadiusRange.value)
+    updateToIndex()
+    socket.emit("onClicked", xCoordinate, yCoordinate, clickRadius, toIndex)
+   
 })
 
 function setup(){
@@ -24,24 +31,18 @@ function setup(){
 }
  
 
-function drawing(objects) {
-    
-    /*for (var y = 0; y < matrix.length; y++) {
-        for (var x = 0; x < matrix[y].length; x++) {
-            let value = matrix[y][x];
-            let object = null;
-            
-            if(value == 1) object = new Grass(x,y);
-            if(object == null) continue;
-            object.move();
-            object = null;
-
+function drawWholeRect() {
+    for (var y = 0; y < matrixx.length; y++) {
+        for (var x = 0; x < matrixx[y].length; x++) {
+            drawRect(x,y, matrixx)
         }
-    }*/
-
-    for(let i in objects){
-        objects[i].move();
     }
+
+
+    // var p = document.createElement('p');
+    // p.innerText = string;
+    // chatDiv = document.getElementById("div")
+    // chatDiv.appendChild(p);
 
 
 }
@@ -60,6 +61,34 @@ function drawRect(x,y, matrix){
        rect(x * side, y * side, side, side);
 }
 
-socket.on("drawRect", function(x,y, matrix){
-    drawRect(x,y, matrix)
+function updateToIndex(){
+    switch(toIndexDocument.value){
+        case "Empty":
+            toIndex = 0;
+            return;
+        case "Grass":
+            toIndex = 1;
+            return;
+        case "GrassEater":
+            toIndex = 2;
+            return;
+        case "Predator":
+            toIndex = 3;
+            return;
+        case "Sherrif":
+            toIndex = 4;
+            return;
+        case "Sprayer":
+            toIndex = 5;
+            return;
+        case "Fire":
+            toIndex = 98;
+            return;
+    }
+}
+
+socket.on("updateWholeRect", function(matrix, objects){
+    matrixx =  matrix
+    objectss = objects
+    drawWholeRect()
 })
