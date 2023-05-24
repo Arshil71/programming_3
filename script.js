@@ -7,17 +7,28 @@ var side = 15;
 var xLength = 50
 var yLength = 50
 
+//weather related variables
+var currentWeatherr = "Spring"
+var weatherDocument = document.getElementById("weather")
+
+
 //click event related variables
+
+
+var cheatButton = document.getElementById("cheatButton")
+
+var cheatMode = false
+var cheatSheet = document.getElementById("cheatSheet")
 var clickRadius = 0
 var clickRadiusRange = document.getElementById("clickRadiusRange")
 var toIndex = 5
 var toIndexDocument = document.getElementById("toIndex")
 
+
 //statistics related variables
 var grassEatenDocument = document.getElementById("grassEaten")
-var grassEaten = 0
 var grassBurntDocument = document.getElementById("grassBurnt")
-var grassBurnt = 0
+var grassEaterEatenDocument = document.getElementById("grassEaterEaten")
 
 socket.on("initial", function(matrix){
     matrixx = matrix;
@@ -26,9 +37,11 @@ socket.on("initial", function(matrix){
 window.addEventListener("click", function(){
     var xCoordinate = Math.floor(mouseX/side)
     var yCoordinate = Math.floor(mouseY/side)
-    clickRadius = parseInt(clickRadiusRange.value)
-    updateToIndex()
-    socket.emit("onClicked", xCoordinate, yCoordinate, clickRadius, toIndex)
+    if(cheatMode){
+        clickRadius = parseInt(clickRadiusRange.value)
+        updateToIndex()
+        socket.emit("onCheatClicked", xCoordinate, yCoordinate, clickRadius, toIndex)
+    }
    
 })
 
@@ -56,7 +69,10 @@ function drawWholeRect() {
 
 function drawRect(x,y, matrix){
     let e = matrix[y][x];
-       if (e == 1) fill("green");
+       if (e == 1){
+            if(currentWeatherr == "Spring" || currentWeatherr =="Summer") fill("green");
+            else if(currentWeatherr == "Winter") fill(220, 245, 220)
+       } 
        else if(e == 2) fill("yellow");
        else if(e == 3) fill("red");
        else if(e == 4) fill("purple")
@@ -100,12 +116,28 @@ socket.on("updateWholeRect", function(matrix, objects){
     drawWholeRect()
 })
 
-socket.on("grassEaten", function(){
+socket.on("updateWeather", function(currentWeather){
+    currentWeatherr = currentWeather
+    weatherDocument.innerHTML = currentWeather
+})
+
+cheatButton.addEventListener("change", function(){
+    cheatSheet.hidden = !cheatSheet.hidden //alternate between hiding and revealing cheatsheet
+    cheatMode = !cheatMode
+})
+
+//STATISTIC RELATED SIGNALS:
+socket.on("grassEaten", function(grassEaten){
     grassEaten++;
     grassEatenDocument.innerHTML = "Grass Eaten: " + grassEaten;
 })
 
-socket.on("grassBurnt", function(){
+socket.on("grassBurnt", function(grassBurnt){
     grassBurnt++;
     grassBurntDocument.innerHTML = "Grass Burnt: " + grassBurnt
+})
+
+socket.on("grassEaterEaten", function(grassEaterEaten){
+    grassEaterEaten++;
+    grassEaterEatenDocument.innerHTML = "Grass Eaters Eaten: " + grassEaterEaten;
 })

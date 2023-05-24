@@ -14,7 +14,7 @@ module.exports = class Fire extends Block{
         } 
 
         let rand = Math.random() * 100;
-        if(rand > 75) {
+        if(rand > this.weatherAffect(75, true)) {
             this.remove(this.x, this.y) //25% chance for the fire to disapear regardless.
             return;
         }
@@ -24,13 +24,28 @@ module.exports = class Fire extends Block{
 
         this.remove(grassX, grassY, this.id) //remove the grass
 
-        if(rand < 40){ //40% chance for the fire to spread.
+        if(rand < this.weatherAffect(40, false)){ //40% chance for the fire to spread.
             GlobalMethods.changeMatrix(grassX, grassY, this.id, true);
         }
         else{
             GlobalMethods.changeMatrix(grassX, grassY, this.id, false);
             GlobalMethods.changeMatrix(this.x, this.y, 0, false);
             this.changeCoords(grassX, grassY);
+        }
+    }
+
+    weatherAffect(rand, bigger){
+        var sign = 1
+        if(bigger) sign = -1
+        switch(currentWeather){
+            case "Spring":
+                return rand;
+            case "Summer":
+                return rand + (-35 * sign);
+            case "Fall":
+                return rand;
+            case "Winter":
+                return rand + (35 * sign);
         }
     }
 }

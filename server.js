@@ -13,6 +13,16 @@ server.listen(3000, function(){
    console.log("Example is running on port 3000");
 });
 
+const Weather = {
+   Spring: "Spring",
+   Summer: "Summer",
+   Fall: "Fall",
+   Winter: "Winter"
+}
+
+currentWeather = Weather.Spring
+currentFrame = 0
+
 var framRate = 10
 
 xLength = 50;
@@ -22,6 +32,7 @@ matrix = [];
 
 objects = [];
 
+
 const Block = require("./Block")
 const Grass = require("./Grass")
 const GrassEater = require("./GrassEater")
@@ -30,7 +41,11 @@ const Sprayer = require("./Sprayer")
 const Sherrif = require("./Sherrif")
 const ExplosiveBullet = require("./ExplosiveBullet")
 const Fire = require("./Fire");
-const { log } = require("console");
+
+//statistics stuff
+grassEaten = 0
+grassBurnt = 0
+grassEaterEaten = 0
 
 GlobalMethods = {
    //return the class version of a given id.
@@ -59,17 +74,22 @@ GlobalMethods = {
       if(matrix[y][x] == 1){
          //if grass has been eaten by predator or grass eater
          if(remover == 2 || remover == 3)
-            io.emit("grassEaten")
+            grassEaten++;
          
          //if grass was burnt by fire
-         else if(remover == 98){
-            io.emit("grassBurnt")
-         }
+         else if(remover == 98)
+            grassBurnt++;
             
       }
 
+      else if(matrix[y][x] == 2){
+         //grassEater eaten by predator
+         if(remover == 3)
+            grassEaterEaten++;
+      }
+
        matrix[y][x] = value;
-       if(spread == true) objects.push(GlobalMethods.classify(value, x, y));
+       if(spread == true && value != 0) objects.push(GlobalMethods.classify(value, x, y));
    },
 }
 
@@ -104,13 +124,34 @@ function createCanvas(){
 }
 
 function drawGame(){
+   updateWeather()
    for(let i in objects){
       objects[i].move();
    }
 
    io.emit("updateWholeRect", matrix)
+
+   //statistics, these variables are stored in the server for optimizing the performance, instead of reapeatedly emitting these signals for each object and updating them for the client
+   io.emit("grassEaten", grassEaten)
+   io.emit("grassBurnt", grassBurnt)
+   io.emit("grassEaterEaten", grassEaterEaten)
+
+
    return matrix
 
+}
+
+function updateWeather(){
+   currentFrame++;
+   if(currentFrame == 50){
+      currentWeather = Weather.Summer
+      io.emit("updateWeather", currentWeather)
+   } 
+   else if(currentFrame == 100){
+      currentFrame = 0
+      currentWeather = Weather.Winter
+      io.emit("updateWeather", currentWeather)
+   }
 }
 
 
@@ -122,17 +163,20 @@ clearInterval()
 //    	chatDiv.appendChild(p);
 
 io.on("connection", function(socket){
+   //THIS SERVER WORKS FOR 1 CLIENT ONLY, A NEW USER ENTERING WILL CAUSE EVERYTHING TO RESTART
+   grassEaten = 0;
+   grassBurnt = 0;
+   grassEaterEaten = 0;
    matrix = [];
    objects = [];
    createCanvas()
-   socket.emit("objectsInfo", objects)
    socket.emit("initial", matrix)
 
    socket.on("disconnect", function(){
       console.log("A user left!")
    })
 
-   socket.on("onClicked", function(x, y, radius, toIndex){
+   socket.on("onCheatClicked", function(x, y, radius, toIndex){
       if(!isValid(x,y)) return
       var spread = toIndex > 0
 

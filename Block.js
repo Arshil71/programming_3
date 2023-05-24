@@ -1,7 +1,5 @@
 // Class numbers: EMPTY: 0, GRASS: 1, GRASS_EATER: 2, PREDATOR: 3, SHERRIF: 4, SPRAYER: 5 ,FIRE: 98, EXPLOSIVE_BULLET: 99, 
 
-const { Socket } = require("socket.io");
-
 //is the main parent of all differrent class types.
 module.exports = class Block{
     constructor(x, y, moveSpeed){
@@ -23,6 +21,7 @@ module.exports = class Block{
 
     //checks and returns an array (coordinates) of a block with id = number
     chooseCell(number) {
+        console.log(currentWeather);
         var found = [];
         for (var i in this.directions) {
             var x = this.directions[i][0];
