@@ -1,5 +1,7 @@
 // Class numbers: EMPTY: 0, GRASS: 1, GRASS_EATER: 2, PREDATOR: 3, SHERRIF: 4, SPRAYER: 5 ,FIRE: 98, EXPLOSIVE_BULLET: 99, 
 
+const { Socket } = require("socket.io");
+
 //is the main parent of all differrent class types.
 module.exports = class Block{
     constructor(x, y, moveSpeed){
@@ -54,11 +56,11 @@ module.exports = class Block{
     }
 
     //removes object at given coordinates.
-    remove(x,y){
+    remove(x,y, from){
         for(var i in objects){
             if(x == objects[i].x && y == objects[i].y){
                 objects.splice(i,1);
-                GlobalMethods.changeMatrix(x,y, 0, false);
+                GlobalMethods.changeMatrix(x,y, 0, false, from);
                 return; //to break out of the loop, not keep searching for the object.
             }
         }

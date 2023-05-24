@@ -7,10 +7,17 @@ var side = 15;
 var xLength = 50
 var yLength = 50
 
+//click event related variables
 var clickRadius = 0
 var clickRadiusRange = document.getElementById("clickRadiusRange")
 var toIndex = 5
 var toIndexDocument = document.getElementById("toIndex")
+
+//statistics related variables
+var grassEatenDocument = document.getElementById("grassEaten")
+var grassEaten = 0
+var grassBurntDocument = document.getElementById("grassBurnt")
+var grassBurnt = 0
 
 socket.on("initial", function(matrix){
     matrixx = matrix;
@@ -91,4 +98,14 @@ socket.on("updateWholeRect", function(matrix, objects){
     matrixx =  matrix
     objectss = objects
     drawWholeRect()
+})
+
+socket.on("grassEaten", function(){
+    grassEaten++;
+    grassEatenDocument.innerHTML = "Grass Eaten: " + grassEaten;
+})
+
+socket.on("grassBurnt", function(){
+    grassBurnt++;
+    grassBurntDocument.innerHTML = "Grass Burnt: " + grassBurnt
 })

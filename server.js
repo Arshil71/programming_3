@@ -29,7 +29,8 @@ const Predator = require("./Predator")
 const Sprayer = require("./Sprayer")
 const Sherrif = require("./Sherrif")
 const ExplosiveBullet = require("./ExplosiveBullet")
-const Fire = require("./Fire")
+const Fire = require("./Fire");
+const { log } = require("console");
 
 GlobalMethods = {
    //return the class version of a given id.
@@ -53,7 +54,20 @@ GlobalMethods = {
    },
 
    //change an element in the matrix, and update the color on screen. 
-   changeMatrix: function(x, y, value, spread){
+   changeMatrix: function(x, y, value, spread, remover = -1){
+      //statistics stuff:
+      if(matrix[y][x] == 1){
+         //if grass has been eaten by predator or grass eater
+         if(remover == 2 || remover == 3)
+            io.emit("grassEaten")
+         
+         //if grass was burnt by fire
+         else if(remover == 98){
+            io.emit("grassBurnt")
+         }
+            
+      }
+
        matrix[y][x] = value;
        if(spread == true) objects.push(GlobalMethods.classify(value, x, y));
    },

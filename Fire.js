@@ -22,7 +22,7 @@ module.exports = class Fire extends Block{
         let grassX = grassCoords[0];
         let grassY = grassCoords[1];
 
-        this.remove(grassX, grassY) //remove the grass
+        this.remove(grassX, grassY, this.id) //remove the grass
 
         if(rand < 40){ //40% chance for the fire to spread.
             GlobalMethods.changeMatrix(grassX, grassY, this.id, true);

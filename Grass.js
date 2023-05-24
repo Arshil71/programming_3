@@ -3,6 +3,7 @@ const Block = require("./Block")
 module.exports =  class Grass extends Block { //spreads around, is food for many objects (green).
     constructor(x, y) {
         super(x, y, 36);
+        this.id = 1
     }
 
 
