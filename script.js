@@ -70,8 +70,10 @@ function drawWholeRect() {
 function drawRect(x,y, matrix){
     let e = matrix[y][x];
        if (e == 1){
-            if(currentWeatherr == "Spring" || currentWeatherr =="Summer") fill("green");
+            if(currentWeatherr == "Spring") fill("green");
+            else if(currentWeatherr =="Summer") fill(60, 240, 5)
             else if(currentWeatherr == "Winter") fill(220, 245, 220)
+            else fill(150, 209, 0)
        } 
        else if(e == 2) fill("yellow");
        else if(e == 3) fill("red");

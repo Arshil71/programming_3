@@ -7,6 +7,7 @@ module.exports = class Sherrif extends Block { //moves around and shoots explosi
         this.shootSpeed = 4
         this.shootStep = 0;
         this.id = 4;
+        this.weatherChanged(currentWeather)
     }
 
     move() {
@@ -39,6 +40,22 @@ module.exports = class Sherrif extends Block { //moves around and shoots explosi
 
         this.step = 0;
 
+    }
+
+    weatherChanged(weather){
+        switch(weather){
+            case "Spring":
+                this.shootSpeed = 4
+                return;
+            case "Summer":
+                this.shootSpeed = 3 //let's asssume the hot weather makes a person want to shoot more often
+                return;
+            case "Fall":
+                this.shootSpeed = 4
+                return;
+            case "Winter":
+                this.shootSpeed = 5
+        }
     }
 }
 

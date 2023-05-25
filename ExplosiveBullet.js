@@ -6,7 +6,9 @@ module.exports = class ExplosiveBullet extends Block {
         super(x, y, 1);
         this.direction = direction;
         this.explosionRadius = 8;
+        this.fireChance = 5
         this.id = 99;
+        this.weatherChanged(currentWeather)
     }
 
     move() {
@@ -26,7 +28,7 @@ module.exports = class ExplosiveBullet extends Block {
                         let random = Math.random() * 100;
                         if (random > 75) continue; //theres a 75% chance of deleting the block
 
-                        if(matrix[yy][xx] == 1 /*grass detected */ && random < 5){ //5% chance to cause fire from the explosion
+                        if(matrix[yy][xx] == 1 /*grass detected */ && random < this.fireChance){ //5% chance to cause fire from the explosion
                             this.remove(xx, yy);
                             GlobalMethods.changeMatrix(xx,yy, 98, true)
                         }
@@ -36,6 +38,26 @@ module.exports = class ExplosiveBullet extends Block {
                     }
                 }
             }
+        }
+    }
+
+    weatherChanged(weather){
+        switch(weather){
+            case "Spring":
+                this.explosionRadius = 8;
+                this.fireChance = 5;
+                return;
+            case "Summer":
+                this.explosionRadius = 9;
+                this.fireChance = 15;
+                return;
+            case "Fall":
+                this.explosionRadius = 8;
+                this.fireChance = 5;
+                return;
+            case "Winter":
+                this.explosionRadius = 7;
+                this.fireChance = 2;
         }
     }
 }

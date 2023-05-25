@@ -4,6 +4,9 @@ module.exports = class Fire extends Block{
     constructor(x,y){
         super(x,y,1);
         this.id = 98;
+        this.die = 25;
+        this.spreadChance = 40;
+        this.weatherChanged(currentWeather)
     }
 
     move(){
@@ -14,7 +17,7 @@ module.exports = class Fire extends Block{
         } 
 
         let rand = Math.random() * 100;
-        if(rand > this.weatherAffect(75, true)) {
+        if(rand < this.die) {
             this.remove(this.x, this.y) //25% chance for the fire to disapear regardless.
             return;
         }
@@ -24,7 +27,7 @@ module.exports = class Fire extends Block{
 
         this.remove(grassX, grassY, this.id) //remove the grass
 
-        if(rand < this.weatherAffect(40, false)){ //40% chance for the fire to spread.
+        if(rand < this.spreadChance){ //40% chance for the fire to spread.
             GlobalMethods.changeMatrix(grassX, grassY, this.id, true);
         }
         else{
@@ -34,18 +37,23 @@ module.exports = class Fire extends Block{
         }
     }
 
-    weatherAffect(rand, bigger){
-        var sign = 1
-        if(bigger) sign = -1
-        switch(currentWeather){
+    weatherChanged(weather){
+        switch(weather){
             case "Spring":
-                return rand;
+                this.die = 25;
+                this.spreadChance = 40;
+                return;
             case "Summer":
-                return rand + (-35 * sign);
+                this.die = 10;
+                this.spreadChance = 60;
+                return;
             case "Fall":
-                return rand;
+                this.die = 25;
+                this.spreadChance = 40;
+                return;
             case "Winter":
-                return rand + (35 * sign);
+                this.die = 50;
+                this.spreadChance = 20;
         }
     }
 }

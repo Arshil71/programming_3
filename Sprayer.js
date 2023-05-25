@@ -4,9 +4,10 @@ module.exports = class Sprayer extends Block{ //boosts the growth of nearby gras
     constructor(x,y){
         super(x,y, 34);
 
-        this.effectRadius = 3; //the radius of which grass is boosted
-        this.spreadRadius = 2; //radius of grass spread
+        this.effectRadius = 2; //the radius of which grass is boosted
+        this.spreadRadius = 1; //radius of grass spread
         this.id = 5; 
+        this.weatherChanged(currentWeather)
     }
 
     //doesn't move, but boosts grass spread
@@ -38,6 +39,30 @@ module.exports = class Sprayer extends Block{ //boosts the growth of nearby gras
             for (let yy = y - this.spreadRadius; yy < y + this.spreadRadius; yy++){
                 if(this.isValid(xx,yy) && matrix[yy][xx] == 0) GlobalMethods.changeMatrix(xx, yy, 1, true) //if empty, add grass
             }
+        }
+    }
+
+    weatherChanged(weather){
+        switch(weather){
+            case "Spring":
+                this.moveSpeed = 34;
+                this.spreadRadius = 1;
+                this.effectRadius = 2;
+                return;
+            case "Summer":
+                this.moveSpeed = 28;
+                this.spreadRadius = 2;
+                this.effectRadius = 3;
+                return;
+            case "Fall":
+                this.moveSpeed = 36;
+                this.spreadRadius = 1;
+                this.effectRadius = 2;
+                return;
+            case "Winter":
+                this.moveSpeed = 38;
+                this.spreadRadius = 1;
+                this.effectRadius = 1;
         }
     }
 }

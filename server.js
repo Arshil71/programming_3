@@ -13,6 +13,8 @@ server.listen(3000, function(){
    console.log("Example is running on port 3000");
 });
 
+//ADD AN FPS BAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 const Weather = {
    Spring: "Spring",
    Summer: "Summer",
@@ -142,15 +144,33 @@ function drawGame(){
 }
 
 function updateWeather(){
-   currentFrame++;
-   if(currentFrame == 50){
+   currentFrame += 1;
+   if(currentFrame == 0){
+      currentWeather = Weather.Spring
+      io.emit("updateWeather", currentWeather)
+      updateObjectsWeather()
+   } 
+   else if(currentFrame == 50){
       currentWeather = Weather.Summer
       io.emit("updateWeather", currentWeather)
-   } 
+      updateObjectsWeather()
+   }
    else if(currentFrame == 100){
-      currentFrame = 0
+      currentWeather = Weather.Fall
+      io.emit("updateWeather", currentWeather)
+      updateObjectsWeather()
+   }
+   else if(currentFrame == 150){
+      currentFrame = -50
       currentWeather = Weather.Winter
       io.emit("updateWeather", currentWeather)
+      updateObjectsWeather()
+   }
+}
+
+function updateObjectsWeather(){
+   for(var i in objects){
+      objects[i].weatherChanged(currentWeather)
    }
 }
 

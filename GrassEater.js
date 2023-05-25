@@ -3,10 +3,15 @@ const Block = require("./Block")
 module.exports = class GrassEater extends Block { //eats grass (yellow)
     constructor(x, y) {
         super(x, y, 5);
+        
         this.energy = 4;
         this.multiply = 10;
         this.target = 1 //grass
         this.id = 2;
+
+        this.moveSpeed += 1; //used to be able to adjust with weatherChanged()
+        this.multiply += 3;
+        this.weatherChanged(currentWeather)
     }
 
     move() {
@@ -51,5 +56,26 @@ module.exports = class GrassEater extends Block { //eats grass (yellow)
         this.changeCoords(x, y); //update coordinates.
 
         this.step = 0;
+    }
+
+    weatherChanged(weather){
+        switch(weather){
+            //-= and += are used to be able to handle both predator and grasseater variables accordingly
+            case "Spring":
+                this.moveSpeed -= 1;
+                this.multiply -= 3;
+                return;
+            case "Summer":
+                this.moveSpeed -= 1;
+                this.multiply -= 3;
+                return;
+            case "Fall":
+                this.moveSpeed += 1;
+                this.multiply += 3;
+                return;
+            case "Winter":
+                this.moveSpeed += 1;
+                this.multiply += 3;
+        }
     }
 }
