@@ -14,7 +14,7 @@ var weatherDocument = document.getElementById("weather")
 
 //click event related variables
 
-
+//cheat stuff
 var cheatButton = document.getElementById("cheatButton")
 
 var cheatMode = false
@@ -23,6 +23,7 @@ var clickRadius = 0
 var clickRadiusRange = document.getElementById("clickRadiusRange")
 var toIndex = 5
 var toIndexDocument = document.getElementById("toIndex")
+
 
 
 //statistics related variables
@@ -110,6 +111,14 @@ function updateToIndex(){
             toIndex = 98;
             return;
     }
+}
+
+function sherrifShowdown(){
+    socket.emit("sherrifShowdown");
+}
+
+function grassDay(){
+    socket.emit("grassDay")
 }
 
 socket.on("updateWholeRect", function(matrix, objects){

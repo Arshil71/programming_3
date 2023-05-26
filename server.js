@@ -218,5 +218,30 @@ io.on("connection", function(socket){
       io.emit("updateWholeRect", matrix)
       
    })
+
+   //all the existing sherrifs in the game start shooting and moving faster for 10 turns
+   socket.on("sherrifShowdown", function(){
+      for(var i in objects){
+         if(objects[i].id == 4){
+            objects[i].goHam()
+         }
+      }
+   })
+
+   //randomly add grass in the game on empty tiles
+   socket.on("grassDay", function(){
+      for (let y = 0; y < yLength; y++) {
+         for (let x = 0; x < xLength; x++) {
+            if(matrix[y][x] == 0){
+               var rand = Math.random() * 100;
+               if(rand < 30){ //30% chance to add grass in an empty tile
+                  matrix[y][x] = 1;
+                  objects.push(GlobalMethods.classify(1, x, y));
+               }
+            }
+         }
+
+      }
+   })
    
 })

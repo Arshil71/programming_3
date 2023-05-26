@@ -40,15 +40,15 @@ module.exports = class Fire extends Block{
     weatherChanged(weather){
         switch(weather){
             case "Spring":
-                this.die = 25;
+                this.die = 30;
                 this.spreadChance = 40;
                 return;
             case "Summer":
-                this.die = 10;
-                this.spreadChance = 60;
+                this.die = 15;
+                this.spreadChance = 50;
                 return;
             case "Fall":
-                this.die = 25;
+                this.die = 30;
                 this.spreadChance = 40;
                 return;
             case "Winter":

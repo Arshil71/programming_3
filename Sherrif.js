@@ -6,16 +6,28 @@ module.exports = class Sherrif extends Block { //moves around and shoots explosi
         super(x, y, 14);
         this.shootSpeed = 4
         this.shootStep = 0;
+        this.isHam = false;
+        this.hamStep = 10;
         this.id = 4;
         this.weatherChanged(currentWeather)
     }
 
     move() {
         if (++this.step < this.moveSpeed) return;
+
+        if(this.isHam){
+            this.hamStep --;
+            if(this.hamStep == 0){
+                this.isHam = false;
+                this.hamStep = 10;
+                this.moveSpeed = 14;
+                this.weatherChanged(currentWeather)
+            }
+        }
         this.shootStep++;
 
         //check if it's time to shoot
-        if (this.shootStep == this.shootSpeed) {
+        if (this.shootStep >= this.shootSpeed) {
             let direction = this.random(this.directions);
             let bulletX = direction[0];
             let bulletY = direction[1];
@@ -42,19 +54,27 @@ module.exports = class Sherrif extends Block { //moves around and shoots explosi
 
     }
 
+    goHam(){
+        this.moveSpeed = 5;
+        this.shootSpeed = 1;
+        this.isHam = true;
+    }
+
     weatherChanged(weather){
-        switch(weather){
-            case "Spring":
-                this.shootSpeed = 4
-                return;
-            case "Summer":
-                this.shootSpeed = 3 //let's asssume the hot weather makes a person want to shoot more often
-                return;
-            case "Fall":
-                this.shootSpeed = 4
-                return;
-            case "Winter":
-                this.shootSpeed = 5
+        if(!this.isHam){
+            switch(weather){
+                case "Spring":
+                    this.shootSpeed = 4
+                    return;
+                case "Summer":
+                    this.shootSpeed = 3 //let's asssume the hot weather makes a person want to shoot more often
+                    return;
+                case "Fall":
+                    this.shootSpeed = 4
+                    return;
+                case "Winter":
+                    this.shootSpeed = 5
+            }
         }
     }
 }
