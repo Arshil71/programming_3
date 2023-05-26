@@ -44,10 +44,12 @@ const Sherrif = require("./Sherrif")
 const ExplosiveBullet = require("./ExplosiveBullet")
 const Fire = require("./Fire");
 
-//statistics stuff
+//statistics stuff, make sure to also add these in io.on(connection)
 grassEaten = 0
 grassBurnt = 0
 grassEaterEaten = 0
+tilesExploded = 0
+grassSprayed = 0;
 
 GlobalMethods = {
    //return the class version of a given id.
@@ -58,9 +60,14 @@ GlobalMethods = {
           case 1:
               return new Grass(x,y);
           case 2:
-              return new GrassEater(x,y);
+             var genderChooser = Math.random();
+             if(genderChooser < 0.4) return new GrassEater(x,y, "male") //40% chance of male
+             else return new GrassEater(x,y, "female"); //60% chance of female
+              
           case 3:
-              return new Predator(x,y);
+            var genderChooser = Math.random();
+            if(genderChooser < 0.4) return new Predator(x,y, "male") //40% chance of male
+            else return new Predator(x,y, "female"); //60% chance of female
           case 4:
               return new Sherrif(x,y);
           case 5:
@@ -100,6 +107,15 @@ function isValid(x,y){
    return x >= 0 && y >= 0 && y < matrix.length && x < matrix[y].length;
 }
 
+function deleteObject(x,y){
+   for(var i in objects){
+      if(x == objects[i].x && y == objects[i].y){
+         objects.splice(i,1);
+         break; //to break out of the loop, not keep searching for the object.
+      }
+   }
+}
+
 function createCanvas(){
    console.log("A user joined!")
    for (let y = 0; y < yLength; y++) {
@@ -134,10 +150,7 @@ function drawGame(){
    io.emit("updateWholeRect", matrix)
 
    //statistics, these variables are stored in the server for optimizing the performance, instead of reapeatedly emitting these signals for each object and updating them for the client
-   io.emit("grassEaten", grassEaten)
-   io.emit("grassBurnt", grassBurnt)
-   io.emit("grassEaterEaten", grassEaterEaten)
-
+   io.emit("statistics", [grassEaten,grassBurnt,grassEaterEaten,tilesExploded,grassSprayed])
 
    return matrix
 
@@ -187,6 +200,8 @@ io.on("connection", function(socket){
    grassEaten = 0;
    grassBurnt = 0;
    grassEaterEaten = 0;
+   tilesExploded = 0;
+   grassSprayed = 0;
    matrix = [];
    objects = [];
    createCanvas()
@@ -204,12 +219,7 @@ io.on("connection", function(socket){
          for(var xx = x - radius; xx <= x + radius; xx++){
             if(isValid(xx,yy)){
                if(matrix[yy][xx] != 0){
-                  for(var i in objects){
-                     if(xx == objects[i].x && yy == objects[i].y){
-                        objects.splice(i,1);
-                        break; //to break out of the loop, not keep searching for the object.
-                     }
-                  }
+                  deleteObject(xx,yy)
                }
                GlobalMethods.changeMatrix(xx,yy, toIndex, spread);
             }
@@ -218,6 +228,8 @@ io.on("connection", function(socket){
       io.emit("updateWholeRect", matrix)
       
    })
+   
+   //CLICK EVENTS!
 
    //all the existing sherrifs in the game start shooting and moving faster for 10 turns
    socket.on("sherrifShowdown", function(){
@@ -237,6 +249,32 @@ io.on("connection", function(socket){
                if(rand < 30){ //30% chance to add grass in an empty tile
                   matrix[y][x] = 1;
                   objects.push(GlobalMethods.classify(1, x, y));
+               }
+            }
+         }
+
+      }
+   })
+
+   //cause the edges to burn and some grass aswell.
+   socket.on("burnTheWorld", function(){
+      for (let y = 0; y < yLength; y++) {
+         for (let x = 0; x < xLength; x++) {
+            if(x == 0 || y == 0 || x == xLength - 1 || y == yLength - 1){ //add fire on the edge tiles
+               if(matrix[y][x] != 0){
+                  deleteObject(x,y)
+               }
+               matrix[y][x] = 98
+               objects.push(GlobalMethods.classify(98,x,y))
+            }
+
+            else if(matrix[y][x] == 1){
+               var rand = Math.random() * 100;
+               if(rand < 10){ //10% chance to burn a random grass tile
+                  deleteObject(x,y);
+
+                  matrix[y][x] = 98;
+                  objects.push(GlobalMethods.classify(98, x, y));
                }
             }
          }

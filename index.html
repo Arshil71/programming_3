@@ -23,23 +23,29 @@
         </select></h6>
         
     </div>
-    
 
-
-    <h2 id="weather">Spring</h2>
-
-    <button onclick="sherrifShowdown()" >Sherrif Showdown</button>
-    <button onclick="grassDay()">Grass Day</button>
-    <button onclick="nutritiousGrass()">Nutritious Grass</button>
 
     <h4>Statistics</h4>
     <p id="grassEaten">Grass Eaten:</p>
     <p id="grassBurnt">Grass Burnt:</p>
     <p id="grassEaterEaten">Grass Eaters Eaten:</p>
+    <p id="tilesExploded">Tiles Exploded:</p>
+    <p id="grassSprayed">Grass Sprayed:</p>
+
+    <h2 id="weather">Spring</h2>
+
+    
+    <!--explanation of each method is written in server.js inside of io.on("connection") under everything else-->
+    <button onclick="sherrifShowdown()" >Sherrif Showdown</button>
+    <button onclick="grassDay()">Spread Grass</button>
+    <button onclick="burnTheWorld()">BURN THE WORLD!</button>
+
+    <p></p>
+
+
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js"></script>
     <script src="script.js"></script>
-
     
 
 </body>

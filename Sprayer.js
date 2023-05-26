@@ -21,7 +21,10 @@ module.exports = class Sprayer extends Block{ //boosts the growth of nearby gras
         for (let xx = this.x - this.effectRadius; xx < this.x + this.effectRadius; xx++) {
             for (let yy = this.y - this.effectRadius; yy < this.y + this.effectRadius; yy++) {
                 if(this.isValid(xx,yy)){
-                   if(matrix[yy][xx] == 1) grass.push([xx,yy]); //if tile is grass, add to array.
+                   if(matrix[yy][xx] == 1){
+                        grass.push([xx,yy]) //if tile is grass, add to array. 
+                        grassSprayed++; //Also update the grassSprayed variable for statistics
+                   } 
                    else if(matrix[yy][xx] == 98) this.remove(xx,yy); //if there is fire nearby, take it down (but is not guranteed to catch the fire due to its speed)
                 }
             }

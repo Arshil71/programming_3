@@ -1,9 +1,10 @@
 const Block = require("./Block")
 
 module.exports = class GrassEater extends Block { //eats grass (yellow)
-    constructor(x, y) {
+    constructor(x, y, gender) {
         super(x, y, 5);
         
+        this.gender = gender;
         this.energy = 4;
         this.multiply = 10;
         this.target = 1 //grass
@@ -45,8 +46,14 @@ module.exports = class GrassEater extends Block { //eats grass (yellow)
 
         // energy is enough to multiply
         if (this.energy >= this.multiply) {
-            this.energy = 4;
-            GlobalMethods.changeMatrix(this.x, this.y, this.id, true) //multiply at current position.
+            if(this.gender == "female"){
+                this.energy = 4;
+                GlobalMethods.changeMatrix(this.x, this.y, this.id, true) //multiply at current position.
+            }
+            else{
+                this.energy--; //to prevent having inifinite energy
+                GlobalMethods.changeMatrix(this.x, this.y, 0, false) //replace current position with empty.
+            } 
         }
 
 

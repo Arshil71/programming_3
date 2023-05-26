@@ -26,7 +26,7 @@ module.exports = class ExplosiveBullet extends Block {
                 for (let yy = this.y - this.explosionRadius; yy < this.y + this.explosionRadius; yy++) {
                     if (this.isValid(xx, yy) && matrix[yy][xx] != 0) { //check if the block is in the matrix, and it's not an empty tile.
                         let random = Math.random() * 100;
-                        if (random > 75) continue; //theres a 75% chance of deleting the block
+                        if (random > 75) continue; //theres a 25% chance of deleting the block
 
                         if(matrix[yy][xx] == 1 /*grass detected */ && random < this.fireChance){ //5% chance to cause fire from the explosion
                             this.remove(xx, yy);
@@ -35,6 +35,7 @@ module.exports = class ExplosiveBullet extends Block {
                         else{
                             this.remove(xx, yy);
                         }
+                        tilesExploded++; //update this value for statistics
                     }
                 }
             }

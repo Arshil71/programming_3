@@ -2,7 +2,7 @@ let socket = io()
 let matrixx = []
 let objectss = []
 
-var side = 15;
+var side = 17;
 
 var xLength = 50
 var yLength = 50
@@ -10,9 +10,6 @@ var yLength = 50
 //weather related variables
 var currentWeatherr = "Spring"
 var weatherDocument = document.getElementById("weather")
-
-
-//click event related variables
 
 //cheat stuff
 var cheatButton = document.getElementById("cheatButton")
@@ -30,6 +27,8 @@ var toIndexDocument = document.getElementById("toIndex")
 var grassEatenDocument = document.getElementById("grassEaten")
 var grassBurntDocument = document.getElementById("grassBurnt")
 var grassEaterEatenDocument = document.getElementById("grassEaterEaten")
+var tilesExplodedDocument = document.getElementById("tilesExploded")
+var grassSprayedDocument = document.getElementById("grassSprayed")
 
 socket.on("initial", function(matrix){
     matrixx = matrix;
@@ -121,6 +120,10 @@ function grassDay(){
     socket.emit("grassDay")
 }
 
+function burnTheWorld(){
+    socket.emit("burnTheWorld")
+}
+
 socket.on("updateWholeRect", function(matrix, objects){
     matrixx =  matrix
     objectss = objects
@@ -137,18 +140,12 @@ cheatButton.addEventListener("change", function(){
     cheatMode = !cheatMode
 })
 
-//STATISTIC RELATED SIGNALS:
-socket.on("grassEaten", function(grassEaten){
-    grassEaten++;
-    grassEatenDocument.innerHTML = "Grass Eaten: " + grassEaten;
+//STATISTIC RELATED SIGNAL:
+socket.on("statistics", function(values){
+    grassEatenDocument.innerHTML = "Grass Eaten: " + values[0];
+    grassBurntDocument.innerHTML = "Grass Burnt: " + values[1];
+    grassEaterEatenDocument.innerHTML = "Grass Eaters Eaten: " + values[2];
+    tilesExplodedDocument.innerHTML = "Tiles Exploded: " + values[3];
+    grassSprayedDocument.innerHTML = "Grass Sprayed: " + values[4];
 })
 
-socket.on("grassBurnt", function(grassBurnt){
-    grassBurnt++;
-    grassBurntDocument.innerHTML = "Grass Burnt: " + grassBurnt
-})
-
-socket.on("grassEaterEaten", function(grassEaterEaten){
-    grassEaterEaten++;
-    grassEaterEatenDocument.innerHTML = "Grass Eaters Eaten: " + grassEaterEaten;
-})
