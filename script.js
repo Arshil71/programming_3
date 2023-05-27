@@ -29,6 +29,7 @@ var grassBurntDocument = document.getElementById("grassBurnt")
 var grassEaterEatenDocument = document.getElementById("grassEaterEaten")
 var tilesExplodedDocument = document.getElementById("tilesExploded")
 var grassSprayedDocument = document.getElementById("grassSprayed")
+var currentNumberOfGrassDocument = document.getElementById("currentNumberOfGrass")
 
 socket.on("initial", function(matrix){
     matrixx = matrix;
@@ -147,5 +148,6 @@ socket.on("statistics", function(values){
     grassEaterEatenDocument.innerHTML = "Grass Eaters Eaten: " + values[2];
     tilesExplodedDocument.innerHTML = "Tiles Exploded: " + values[3];
     grassSprayedDocument.innerHTML = "Grass Sprayed: " + values[4];
+    currentNumberOfGrassDocument.innerHTML = "Current Number of Grass: " + values[5];
 })
 

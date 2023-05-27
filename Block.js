@@ -57,13 +57,8 @@ module.exports = class Block{
 
     //removes object at given coordinates.
     remove(x,y, from){
-        for(var i in objects){
-            if(x == objects[i].x && y == objects[i].y){
-                objects.splice(i,1);
-                GlobalMethods.changeMatrix(x,y, 0, false, from);
-                return; //to break out of the loop, not keep searching for the object.
-            }
-        }
+        GlobalMethods.deleteObject(x,y)
+        GlobalMethods.changeMatrix(x,y, 0, false, from);
     }
 
     //checks whether or not [x,y] is in the matrix.

@@ -50,6 +50,7 @@ grassBurnt = 0
 grassEaterEaten = 0
 tilesExploded = 0
 grassSprayed = 0;
+currentNumberOfGrass = 0;
 
 GlobalMethods = {
    //return the class version of a given id.
@@ -58,6 +59,7 @@ GlobalMethods = {
           case 0:
               return null //an empty tile
           case 1:
+            currentNumberOfGrass++;
               return new Grass(x,y);
           case 2:
              var genderChooser = Math.random();
@@ -88,7 +90,6 @@ GlobalMethods = {
          //if grass was burnt by fire
          else if(remover == 98)
             grassBurnt++;
-            
       }
 
       else if(matrix[y][x] == 2){
@@ -100,20 +101,21 @@ GlobalMethods = {
        matrix[y][x] = value;
        if(spread == true && value != 0) objects.push(GlobalMethods.classify(value, x, y));
    },
+
+   deleteObject: function(x,y){
+      for(var i in objects){
+         if(x == objects[i].x && y == objects[i].y){
+            if(objects[i].id == 1) currentNumberOfGrass--;
+            objects.splice(i,1);
+            break; //to break out of the loop, not keep searching for the object.
+         }
+      }
+   }
 }
 
 //checks whether or not [x,y] is in the matrix.
 function isValid(x,y){
    return x >= 0 && y >= 0 && y < matrix.length && x < matrix[y].length;
-}
-
-function deleteObject(x,y){
-   for(var i in objects){
-      if(x == objects[i].x && y == objects[i].y){
-         objects.splice(i,1);
-         break; //to break out of the loop, not keep searching for the object.
-      }
-   }
 }
 
 function createCanvas(){
@@ -150,7 +152,7 @@ function drawGame(){
    io.emit("updateWholeRect", matrix)
 
    //statistics, these variables are stored in the server for optimizing the performance, instead of reapeatedly emitting these signals for each object and updating them for the client
-   io.emit("statistics", [grassEaten,grassBurnt,grassEaterEaten,tilesExploded,grassSprayed])
+   io.emit("statistics", [grassEaten,grassBurnt,grassEaterEaten,tilesExploded,grassSprayed,currentNumberOfGrass])
 
    return matrix
 
@@ -182,18 +184,33 @@ function updateWeather(){
 }
 
 function updateObjectsWeather(){
+   saveStatistics()
    for(var i in objects){
       objects[i].weatherChanged(currentWeather)
    }
 }
 
+function saveStatistics(){
+   let statistics ={
+      "grassEaten" : grassEaten,
+      "grassBurnt" : grassBurnt,
+      "grassEaterEaten" : grassEaterEaten,
+      "tilesExploded" : tilesExploded,
+      "grassSprayed" : grassSprayed,
+      "currentNumberOfGrass" : currentNumberOfGrass
+   }
+
+   var stringifiedStats = JSON.stringify(statistics);
+
+   var fs = require('fs');
+   fs.writeFile("statistics.json", stringifiedStats, function(err, result) {
+      if(err) console.log('error', err);
+   });
+}
+
 
 setInterval(drawGame, 1000/framRate)
 clearInterval()
-// var p = document.createElement('p');
-//    	p.innerText = "msg";
-//     chatDiv = document.getElementById("div")
-//    	chatDiv.appendChild(p);
 
 io.on("connection", function(socket){
    //THIS SERVER WORKS FOR 1 CLIENT ONLY, A NEW USER ENTERING WILL CAUSE EVERYTHING TO RESTART
@@ -202,6 +219,7 @@ io.on("connection", function(socket){
    grassEaterEaten = 0;
    tilesExploded = 0;
    grassSprayed = 0;
+   currentNumberOfGrass = 0;
    matrix = [];
    objects = [];
    createCanvas()
@@ -209,6 +227,7 @@ io.on("connection", function(socket){
 
    socket.on("disconnect", function(){
       console.log("A user left!")
+      saveStatistics()
    })
 
    socket.on("onCheatClicked", function(x, y, radius, toIndex){
@@ -219,7 +238,7 @@ io.on("connection", function(socket){
          for(var xx = x - radius; xx <= x + radius; xx++){
             if(isValid(xx,yy)){
                if(matrix[yy][xx] != 0){
-                  deleteObject(xx,yy)
+                  GlobalMethods.deleteObject(xx,yy)
                }
                GlobalMethods.changeMatrix(xx,yy, toIndex, spread);
             }
@@ -262,7 +281,7 @@ io.on("connection", function(socket){
          for (let x = 0; x < xLength; x++) {
             if(x == 0 || y == 0 || x == xLength - 1 || y == yLength - 1){ //add fire on the edge tiles
                if(matrix[y][x] != 0){
-                  deleteObject(x,y)
+                  GlobalMethods.deleteObject(x,y)
                }
                matrix[y][x] = 98
                objects.push(GlobalMethods.classify(98,x,y))
@@ -271,7 +290,7 @@ io.on("connection", function(socket){
             else if(matrix[y][x] == 1){
                var rand = Math.random() * 100;
                if(rand < 10){ //10% chance to burn a random grass tile
-                  deleteObject(x,y);
+                  GlobalMethods.deleteObject(x,y)
 
                   matrix[y][x] = 98;
                   objects.push(GlobalMethods.classify(98, x, y));
